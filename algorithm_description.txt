@@ -1,0 +1,45 @@
+THE MODEL
+
+
+parameters:
+
+I - inertia, currently 0.4
+M - friction, currently ~0.995
+
+
+edge parameters
+    V_ij - velocity (desired flow per tick) between node i and j
+        V_ij = -V_ji
+    F_ij - actual flow in current tick
+
+
+node parameters
+    basic
+        C_i - capacity
+        T_i - current volume
+        P_i - pressure (like in current system)
+    auxiliary (computed for the needs of the algorithm)
+        Vin_i, Vout_i - summaric in/out velocities of a node
+        Sin_i, Sout_i - satisfaction for incoming and outcoming flow (what fraction of Vin/Vout can be satisfied)
+
+
+in each tick:
+    # update the velocities
+    for each connection i, j:
+        V_ij := ( V_ij * I + (P_j-P_i) * (1-I) ) * M
+
+    # compute auxiliary values
+    for each i:
+        Vin_i = sum_j max(0, V_ji)
+        Vout_i = sum_j max(0, V_ij)
+
+        Sin_i = min(Vin_i, C_i-T_i) / Vin_i
+        Sout_i = min(Vout_i, T_i) / Vout_i
+
+    # apply flow
+    for each connection i, j such that Fij > 0:
+        amt = min(Sout_i, Sin_j) * V_ij
+        T_i -= amt
+        T_j += amt
+
+    # handle other stuff, ie. pumps or fluid-handling machines
