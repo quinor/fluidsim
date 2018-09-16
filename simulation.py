@@ -4,7 +4,7 @@ import copy
 
 class Simulation:
     def __init__(self, w, h):
-        self.I = 0.4
+        self.I = 0.9
         self.M = 0.995
         self.size = (w, h)
         self.display = Display(w, h)
