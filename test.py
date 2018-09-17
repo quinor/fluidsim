@@ -32,6 +32,8 @@ def testcase4(sim):
     sim.enable_cell(2, 1, 20)
     sim.hor_v[0][1] = 100
     sim.ver_v[1][0] = 20
+    sim.ver_v[1][1] = 20
+    sim.ver_v[1][2] = 20
     sim.ver_v[1][3] = 20
 
 testcase4(s)

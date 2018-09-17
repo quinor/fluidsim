@@ -77,6 +77,14 @@ class Simulation:
                         if self.ver_v[y][x+1] > 0 else \
                         max(self.ver_f[y][x+1], self.ver_v[y][x+1]*sat_in)
 
+        for y in range(1, h):
+            for x in range(1, w-1):
+                self.hor_v[y][x] = self.hor_f[y][x]
+
+        for y in range(1, h-1):
+            for x in range(1, w):
+                self.ver_v[y][x] = self.ver_f[y][x]
+
         self.update_display()
 
         for y in range(h):
