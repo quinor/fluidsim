@@ -1,11 +1,20 @@
 from display import Display
 import copy
+import math
+
+
+def mycopysign(x, val):
+    if abs(val) < 1e-3:
+        return 0
+    return math.copysign(x, val)
 
 
 class Simulation:
+
+    def flow(self, old, pressure):
+        return old*0.9 + mycopysign(5, pressure)
+
     def __init__(self, w, h):
-        self.I = 0.9
-        self.M = 0.995
         self.size = (w, h)
         self.display = Display(w, h)
 
@@ -29,17 +38,17 @@ class Simulation:
         for y in range(h-1):
             for x in range(w):
                 if self.enabled[y][x] and self.enabled[y+1][x]:
-                    self.hor_v[y+1][x] = (
-                        self.hor_v[y+1][x] * self.I + \
-                        (self.amount[y][x] - self.amount[y+1][x]) * (1 - self.I)
-                    ) * self.M
+                    self.hor_v[y+1][x] = self.flow(
+                        self.hor_v[y+1][x],
+                        self.amount[y][x] - self.amount[y+1][x]
+                    )
         for y in range(h):
             for x in range(w-1):
                 if self.enabled[y][x] and self.enabled[y][x+1]:
-                    self.ver_v[y][x+1] = (
-                        self.ver_v[y][x+1] * self.I + \
-                        (self.amount[y][x] - self.amount[y][x+1]) * (1 - self.I)
-                    ) * self.M
+                    self.ver_v[y][x+1] = self.flow(
+                        self.ver_v[y][x+1],
+                        self.amount[y][x] - self.amount[y][x+1]
+                    )
 
         self.ver_f = copy.deepcopy(self.ver_v)
         self.hor_f = copy.deepcopy(self.hor_v)
@@ -77,15 +86,15 @@ class Simulation:
                         if self.ver_v[y][x+1] > 0 else \
                         max(self.ver_f[y][x+1], self.ver_v[y][x+1]*sat_in)
 
+        self.update_display()
+
         for y in range(1, h):
-            for x in range(1, w-1):
+            for x in range(w):
                 self.hor_v[y][x] = self.hor_f[y][x]
 
-        for y in range(1, h-1):
+        for y in range(h):
             for x in range(1, w):
                 self.ver_v[y][x] = self.ver_f[y][x]
-
-        self.update_display()
 
         for y in range(h):
             for x in range(w):

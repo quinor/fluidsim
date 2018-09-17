@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 from simulation import Simulation
 
-s = Simulation(3, 2)
-
 def testcase1(sim):
     sim.enable_cell(1, 0, 100)
     sim.enable_cell(0, 1, 0)
@@ -36,7 +34,27 @@ def testcase4(sim):
     sim.ver_v[1][2] = 20
     sim.ver_v[1][3] = 20
 
-testcase4(s)
+def testcase5():
+    sim = Simulation(10, 1)
+    for i in range(10):
+        sim.enable_cell(i, 0, 0)
+    sim.ver_v[0][0] = 100
+    sim.ver_v[0][10] = 100
+    return sim
+
+def testcase6(sim):
+    sim.enable_cell(1, 0, 100)
+    sim.enable_cell(0, 1, 0)
+    sim.enable_cell(1, 1, 0)
+    sim.enable_cell(2, 1, 0)
+    sim.hor_v[0][1] = 25
+    sim.ver_v[1][0] = -10
+    sim.ver_v[1][3] = 20
+
+
+s = Simulation(3, 2)
+testcase6(s)
+#s = testcase5()
 
 s.update_display()
 
