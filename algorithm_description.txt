@@ -3,8 +3,8 @@ THE MODEL
 
 parameters:
 
-I - inertia, currently 0.4
-M - friction, currently ~0.995
+I - inertia, 0.9
+A - acceleration, 5
 
 
 edge parameters
@@ -26,7 +26,7 @@ node parameters
 in each tick:
     # update the velocities
     for each connection i, j:
-        V_ij := ( V_ij * I + (P_j-P_i) * (1-I) ) * M
+        V_ij := V_ij * I + sgn(P_j-P_i) * A
 
     # compute auxiliary values
     for each i:
@@ -38,8 +38,8 @@ in each tick:
 
     # apply flow
     for each connection i, j such that Fij > 0:
-        amt = min(Sout_i, Sin_j) * V_ij
-        T_i -= amt
-        T_j += amt
+        V_ij := min(Sout_i, Sin_j) * V_ij
+        T_i -= V_ij
+        T_j += V_ij
 
     # handle other stuff, ie. pumps or fluid-handling machines
